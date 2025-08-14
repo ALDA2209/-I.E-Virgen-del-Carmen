@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>IEI Virgen del Carmen | Inicio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <!-- Font Awesome estable -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        referrerpolicy="no-referrer" />
+</head>
+<body class="inicio">
+
+  <!-- Encabezado -->
+  <div data-include="components/header.html"></div>
+
+  <!-- 📌 Contenedor donde se cargará la página dinámica -->
+  <div id="contenido-dinamico"></div>
+
+  <!-- PORTADA / SLIDER -->
+  <section class="portada" id="portada">
+    <div class="diapositivas">
+      <div class="diapositiva activa" style="background-image:url('assets/img/heroo5.png')"></div>
+      <div class="diapositiva"        style="background-image:url('assets/img/heroo2.png')"></div>
+      <div class="diapositiva"        style="background-image:url('assets/img/heroo3.png')"></div>
+    </div>
+
+    <div class="interior-portada contenedor">
+      <h1>IE Virgen del Carmen</h1>
+      <p>Educación integral, con valores y aprendizaje activo.</p>
+      <div class="botones-portada">
+        <a href="pages/contacto.html" class="boton boton--pastilla boton--marca">Agendar visita</a>
+        <a href="pages/nuestra-institucion.html" data-page="pages/nuestra-institucion.html" class="boton boton--pastilla boton--borde">Conócenos más</a>
+      </div>
+    </div>
+
+    <button class="flecha-portada flecha-portada--prev" aria-label="Anterior">‹</button>
+    <button class="flecha-portada flecha-portada--next" aria-label="Siguiente">›</button>
+  </section>
+
+<!-- Sección introductoria responsiva -->
+
+<section class="intro contenedor">
+  <div class="intro__contenido">
+    <div class="intro__texto">
+      <h2>Nuestra misión</h2>
+      <p>
+        En la IEI Virgen del Carmen formamos estudiantes íntegros, creativos y comprometidos con su comunidad.
+        Ofrecemos un ambiente seguro y motivador que fomenta la curiosidad, el respeto y la excelencia académica.
+      </p>
+
+      <!-- Botón dinámico -->
+      <button id="btn-mas" class="boton boton--pastilla boton--marca">
+        Conócenos más
+      </button>
+
+      <!-- Contenido oculto debajo del botón -->
+      <div id="descripcion-extra" class="oculto">
+        <p>
+          Nuestra propuesta educativa se basa en valores sólidos y una metodología activa que impulsa el aprendizaje significativo.
+          Trabajamos de la mano con las familias para garantizar una formación integral, incorporando tecnología,
+          arte, deporte y cuidado del medio ambiente.
+        </p>
+      </div>
+    </div>
+
+    <div class="intro__imagen">
+      <img src="assets/img/inicio.png" alt="Estudiantes IEI Virgen del Carmen">
+    </div>
+  </div>
+</section>
+
+
+
+  <!-- Actividades destacadas -->
+  <section class="actividades contenedor">
+  <h2 class="titulo-seccion">Vida en nuestra institución</h2>
+
+<div class="actividad actividad--fila">
+  <div class="actividad-imagen">
+    <img src="assets/img/actividad1.jpg" alt="Feria escolar">
+  </div>
+  <div class="actividad-texto">
+    <h3>Feria escolar</h3>
+    <p>Nuestro evento anual que reúne a familias, estudiantes y docentes en un espacio lleno de actividades, presentaciones culturales y stands educativos que fomentan la creatividad y el aprendizaje colaborativo.</p>
+  </div>
+</div>
+
+  <div class="actividad-card">
+    <div class="actividad-imagen">
+      <img src="assets/img/actividad2.jpg" alt="Festival artístico">
+    </div>
+    <div class="actividad-texto">
+      <h3>Festival artístico</h3>
+      <p>
+        Una celebración del talento de nuestros estudiantes, con presentaciones de música, danza, teatro y pintura,
+        inspirando a todos a expresarse y compartir sus habilidades artísticas.
+      </p>
+    </div>
+  </div>
+
+  <div class="actividad-card">
+    <div class="actividad-imagen">
+      <img src="assets/img/actividad3.jpg" alt="Proyecto ambiental">
+    </div>
+    <div class="actividad-texto">
+      <h3>Proyecto ambiental</h3>
+      <p>
+        Iniciativas ecológicas que promueven la conciencia ambiental, incluyendo jornadas de reciclaje, reforestación
+        y charlas educativas para proteger nuestro planeta.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+  <!-- Testimonios -->
+  <section class="testimonios">
+    <h2>Lo que dicen de nosotros</h2>
+    <div class="testimonios__grid">
+      <div class="testimonio">
+        <i class="fas fa-user-tie avatar mujer"></i>
+        <p>“Una institución que inspira confianza y compromiso con los niños.”</p>
+        <span class="nombre">María López</span>
+        <span class="rol">Madre de familia</span>
+        <div class="estrellas">
+          <i class="fas fa-star"></i><i class="fas fa-star"></i>
+          <i class="fas fa-star"></i><i class="fas fa-star"></i>
+          <i class="fas fa-star-half-alt"></i>
+        </div>
+      </div>
+      <div class="testimonio">
+        <i class="fas fa-user-graduate avatar exalumno"></i>
+        <p>“Aprendí valores y conocimientos que me han acompañado toda mi vida.”</p>
+        <span class="nombre">Luis Torres</span>
+        <span class="rol">Exalumno</span>
+        <div class="estrellas">
+          <i class="fas fa-star"></i><i class="fas fa-star"></i>
+          <i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+          <i class="far fa-star"></i>
+        </div>
+      </div>
+      <div class="testimonio">
+        <i class="fas fa-user-tie avatar hombre"></i>
+        <p>“El ambiente escolar es motivador y seguro para todos los estudiantes.”</p>
+        <span class="nombre">Pedro Castillo</span>
+        <span class="rol">Padre de familia</span>
+        <div class="estrellas">
+          <i class="fas fa-star"></i><i class="fas fa-star"></i>
+          <i class="fas fa-star"></i><i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div data-include="components/footer.html"></div>
+
+  <script src="assets/js/script.js" defer></script>
+</body>
+</html>

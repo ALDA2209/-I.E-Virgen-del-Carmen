@@ -1,0 +1,588 @@
+/* =========================================================
+   0) Base
+========================================================= */
+*{ box-sizing:border-box }
+html,body{ margin:0; padding:0 }
+img{ max-width:100%; height:auto; display:block }
+.contenedor{ max-width:1100px; margin:auto; padding:0 16px }
+
+/* =========================================================
+   1) Paleta (máx. 4 + 1 extra)
+   - --primario (#C9A04D): dorado / avisos / acentos
+   - --oscuro   (#2B1E15): textos fuertes / header sólido
+   - --fondo    (#F7F3E8): fondo general crema
+   - --acento   (#2E7D6B): acento opcional
+   Extra: --blanco
+========================================================= */
+:root{
+  --primario:#C9A04D;
+  --oscuro:#2B1E15;
+  --fondo:#F7F3E8;
+  --acento:#2E7D6B;   /* opcional */
+  --blanco:#fff;
+  --sombra:0 10px 30px rgba(0,0,0,.18);
+}
+body{ background:var(--fondo); color:var(--oscuro); }
+
+
+
+/* =========================================================
+   2) Franja superior (aviso)
+========================================================= */
+.franja-superior{
+  background:var(--primario);
+  color:var(--blanco);
+  text-align:center;
+  letter-spacing:.08em;
+  font-weight:700;
+  padding:8px 12px;
+  font-size:.9rem;
+}
+
+/* =========================================================
+   3) Encabezado sobre portada (overlay + sólido al desplazar)
+========================================================= */
+.encabezado.encima{
+  position:sticky; top:0; z-index:50;
+  color:var(--oscuro); /* texto negro sobre la portada */
+  background:linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,0));
+  backdrop-filter:saturate(140%) blur(6px);
+}
+.desplazado .encabezado.encima{
+  background:var(--oscuro);  /* al hacer scroll */
+  color:var(--blanco);
+  box-shadow:0 8px 20px rgba(0,0,0,.15);
+}
+
+/* Fila del header A TODO LO ANCHO y menú a la derecha */
+.fila-encabezado{
+  width:100%;
+  max-width:none;            /* quitar límite de .contenedor */
+  margin:0 auto;
+  padding:14px 24px;
+  display:flex; align-items:center;
+}
+.marca{ display:flex; align-items:center; gap:10px; text-decoration:none; color:currentColor; flex-shrink:0 }
+.marca__logo{ width:140px; height:130px; object-fit:contain; filter:drop-shadow(0 2px 6px rgba(0,0,0,.4)) }
+.marca__titulo{ font-weight:700 }
+
+/* Navegación */
+.navegacion-principal{
+  margin-left:auto;          /* EMPUJA el menú a la derecha */
+  display:flex; align-items:center; gap:44px;
+}
+.navegacion-principal a{
+  color:currentColor; text-decoration:none; font-weight:600; opacity:.95; letter-spacing:.02em;
+}
+.navegacion-principal a:hover{ opacity:1 }
+.navegacion-principal a.activo{ position:relative }
+.navegacion-principal a.activo::after{
+  content:""; position:absolute; left:0; right:0; bottom:-10px; height:2px;
+  background:currentColor; border-radius:3px;
+}
+
+/* Botones tipo píldora */
+.boton{ text-decoration:none; font-weight:700; display:inline-block }
+.boton--pastilla{ padding:8px 14px; border-radius:999px; background:var(--blanco); color:var(--oscuro); box-shadow:var(--sombra) }
+.boton--pastilla:hover{ transform:translateY(-1px) }
+.boton--borde{ background:transparent; color:currentColor; border:2px solid currentColor; box-shadow:none }
+.boton--marca{ background:var(--primario); color:var(--oscuro) }
+.cta-grupo{ display:flex; align-items:center; gap:16px; margin-left:8px }
+
+/* Móvil */
+.boton-menu{ display:none; background:none; border:0; cursor:pointer }
+.boton-menu .linea{ display:block; width:24px; height:2px; background:currentColor; margin:5px 0 }
+
+@media (max-width: 900px){
+  .boton-menu{ display:block }
+  .navegacion-principal{
+    position:fixed; inset:70px 0 0 0;
+    background:rgba(0,0,0,.92);
+    color:var(--blanco);
+    padding:24px; display:none; flex-direction:column; gap:18px;
+  }
+  .navegacion-principal--visible{ display:flex }
+  .cta-grupo{ flex-direction:column; width:100% }
+  .boton--pastilla, .boton--borde{ text-align:center; width:100% }
+}
+
+/* =========================================================
+   4) Portada (slider)
+========================================================= */
+.portada{
+  position:relative; min-height:64vh; color:var(--oscuro);
+  display:grid; place-items:center; overflow:hidden;
+}
+/* Bloque de contenido centrado */
+.interior-portada {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 60px 16px;
+}
+
+.interior-portada h1,
+.interior-portada p {
+  color: var(--blanco); /* Mantiene blanco para coherencia */
+  text-shadow: 0 3px 6px rgba(0,0,0,0.5); /* Sombra para contraste */
+}
+
+/* Overlay solo detrás del contenido */
+.interior-portada::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(43, 30, 21, 0.45); /* var(--oscuro) con opacidad */
+  z-index: -1;
+  border-radius: 8px; /* opcional para suavizar */
+}
+.portada .diapositivas{ position:absolute; inset:0; z-index:0; pointer-events:none }
+.diapositiva{
+  position:absolute; inset:0; background-size:cover; background-position:center;
+  opacity:0; transition:opacity .8s ease; will-change:opacity;
+}
+.diapositiva.activa{ opacity:1 }
+.diapositiva::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(201,160,77,0.25), rgba(201,160,77,0.15));
+}
+
+.interior-portada{ position:relative; z-index:1; text-align:center; padding:60px 16px }
+.interior-portada h1{ font-size:clamp(28px,5vw,56px); margin:0 0 10px }
+.interior-portada p{ font-size:clamp(16px,2.2vw,20px); margin:0 0 18px }
+
+.flecha-portada{
+  position:absolute; top:50%; transform:translateY(-50%);
+  border:0; width:44px; height:44px; border-radius:50%;
+  background:#ffffffcc; color:var(--oscuro); font-size:24px; cursor:pointer;
+  display:grid; place-items:center; z-index:2;
+}
+.flecha-portada--prev{ left:14px } .flecha-portada--next{ right:14px }
+.flecha-portada:hover{ background:#fff }
+
+/* =========================================================
+   5) Secciones generales
+========================================================= */
+
+/* Solo aplica en la página de inicio - menos portada */
+body.inicio section:not(.portada) {
+  margin-top: 160px;
+  margin-bottom: 160px;
+}
+.intro{ padding:28px 0 }
+
+/* Intro responsivo con Flexbox */
+.intro__contenido {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  align-items: center;
+  justify-content: center;
+}
+
+.intro__texto {
+  flex: 1 1 400px;
+  min-width: 280px;
+}
+
+.intro__texto h2 {
+  font-size: clamp(1.8rem, 2.5vw, 2.5rem);
+  margin-bottom: 14px;
+}
+
+.intro__texto p {
+  font-size: clamp(1rem, 1.2vw, 1.1rem);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.intro__imagen {
+  flex: 1 1 400px;
+  min-width: 280px;
+  display: flex;
+  justify-content: center;
+}
+
+.intro__imagen img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: var(--sombra);
+}
+
+/* Ajustes extra para móviles pequeños */
+@media (max-width: 768px) {
+  .intro__contenido {
+    gap: 24px;
+    text-align: center;
+  }
+
+  .intro__texto p {
+    font-size: 1rem;
+  }
+
+  .intro__imagen {
+    order: -1; /* imagen arriba en móviles */
+  }
+}
+/* Fondo degradado para la sección */
+.intro {
+  background: linear-gradient(90deg, #f8f5f0 0%, #ffffff 100%);
+  padding: 3rem 1rem;
+  border-radius: 12px;
+}
+
+/* Imagen con sombra suave y efecto hover */
+.intro__imagen img {
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.intro__imagen img:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+}
+/* Contenido oculto por defecto */
+.oculto {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+
+.oculto.activo {
+  max-height: 300px; /* ajusta según contenido */
+  opacity: 1;
+}
+
+/* Botón mejorado */
+#btn-mas {
+  background: linear-gradient(135deg, #C9A04D, #b88b3a);
+  border: none;
+  padding: 10px 22px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+#btn-mas:hover {
+  background: linear-gradient(135deg, #b88b3a, #a77a28);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+}
+/* Oculto por defecto con transición */
+.oculto {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: all 0.4s ease;
+}
+
+/* Estado visible con animación */
+.visible {
+  max-height: 500px; /* suficiente para el contenido */
+  opacity: 1;
+}
+
+
+/* =========================================================
+   SECCIÓN 2: ACTIVIDADES DESTACADAS
+   - Usa flexbox para un layout adaptable.
+   - Cada tarjeta de actividad tiene su imagen y descripción.
+========================================================= */
+
+/* Contenedor de las tarjetas: layout flexible y adaptable */
+/* Título de sección */
+/* Título de sección */
+.titulo-seccion {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  font-weight: 700;
+  color: #2B1E15;
+}
+
+/* Card de actividad */
+.actividad-card {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.actividad-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+}
+
+
+/* Imagen */
+/* Contenedor de cada actividad */
+.actividad,
+.actividad-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+}
+
+/* Tamaño consistente de las imágenes */
+.actividad-imagen {
+  flex: 0 0 40%; /* ancho fijo relativo */
+}
+
+.actividad-imagen img {
+  width: 100%;
+  height: 250px; /* alto fijo para las 3 */
+  border-radius: 8px;
+  object-fit: cover; /* recorta sin deformar */
+}
+
+/* Texto */
+.actividad-texto {
+  flex: 1;
+}
+
+.actividad-texto h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.8rem;
+  color: #C9A04D; /* dorado */
+}
+
+.actividad-texto p {
+  font-size: 1rem;
+  color: #444;
+  line-height: 1.6;
+}
+.actividad-imagen {
+  position: relative;
+  overflow: hidden; /* evita que el degradado se salga */
+}
+
+.actividad-imagen img {
+  width: 100%;
+  height: 250px; /* ajusta al tamaño que quieres */
+  object-fit: cover;
+  display: block;
+}
+
+.actividad-imagen::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0; /* lado del degradado */
+  width: 80px; /* ancho del degradado */
+  height: 100%;
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, #fff 100%);
+}
+
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .actividad-card {
+    flex-direction: column;
+  }
+  .actividad-imagen,
+  .actividad-texto {
+    flex: none;
+    width: 100%;
+  }
+  .actividad-texto {
+    padding: 1.5rem;
+  }
+}
+
+
+/* =========================================================
+   SECCIÓN 3: TESTIMONIOS
+   - Disposición en tarjetas usando flexbox.
+   - Cada tarjeta tiene fondo blanco, sombra y bordes redondeados.
+========================================================= */
+
+/* Contenedor general de los testimonios */
+.testimonios__grid {
+  display: flex;          /* Activa flexbox */
+  flex-wrap: wrap;        /* Permite que las tarjetas bajen a la siguiente fila en pantallas pequeñas */
+  gap: 20px;              /* Espacio entre tarjetas */
+}
+
+/* Tarjeta individual del testimonio */
+.testimonio {
+  flex: 1 1 300px;        /* Crece, encoge, y tiene un ancho base de 300px */
+  background: var(--blanco);   /* Fondo blanco para resaltar el texto */
+  border-radius: 10px;         /* Bordes redondeados */
+  padding: 20px;               /* Espaciado interno */
+  box-shadow: var(--sombra);   /* Sombra para darle relieve */
+  font-style: italic;          /* Da un toque visual de cita */
+}
+
+/* Nombre o rol de la persona que opina */
+.testimonio span {
+  display: block;              /* Hace que el nombre esté en una línea aparte */
+  margin-top: 10px;             /* Espacio superior respecto al texto */
+  font-weight: 600;             /* Negrita para destacar */
+  font-style: normal;           /* Quita la cursiva del resto del texto */
+}
+
+.testimonios {
+  margin-top: 60px;
+}
+
+.testimonios__grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.testimonio {
+  flex: 1 1 300px;
+  background: var(--blanco);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: var(--sombra);
+  text-align: center;
+}
+
+.testimonio .avatar {
+  font-size: 50px;
+  margin-bottom: 10px;
+}
+
+/* Colores según tipo */
+.testimonio .avatar.mujer {
+  color: #e91e63; /* Rosa */
+}
+
+.testimonio .avatar.hombre {
+  color: var(--primario); /* Dorado */
+}
+
+.testimonio .avatar.exalumno {
+  color: #2E7D32; /* Verde académico */
+}
+
+.testimonio p {
+  font-style: italic;
+  margin-bottom: 14px;
+}
+
+.testimonio .nombre {
+  display: block;
+  font-weight: bold;
+}
+
+.testimonio .rol {
+  display: block;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: #777;
+}
+.estrellas {
+  margin-top: 8px;
+}
+
+.estrellas i {
+  color: var(--primario); /* Dorado de tu paleta */
+  margin-right: 2px;
+  font-size: 1.1rem;
+}
+/*=======================
+ FOOTER GENERAL
+ ======================== */
+.pie-pagina {
+  background: var(--oscuro, #2B1E15);
+  color: #fff;
+  padding: 40px 0 20px;
+  font-size: 0.9rem;
+}
+
+.pie-pagina .contenedor {
+  max-width: 1100px;
+  margin: auto;
+  padding: 0 16px;
+}
+
+.pie-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 30px;
+  margin-bottom: 20px;
+}
+
+.pie-col h3 {
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+  color: var(--primario, #C9A04D);
+}
+
+.pie-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pie-col ul li {
+  margin-bottom: 8px;
+}
+
+.pie-col ul li a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.pie-col ul li a:hover {
+  color: var(--primario, #C9A04D);
+}
+
+.redes a {
+  color: #fff;
+  font-size: 1.2rem;
+  margin-right: 10px;
+}
+
+.redes a:hover {
+  color: var(--primario, #C9A04D);
+}
+
+.pie-copy {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #ccc;
+}
+/* ====== Sección Nuestra Institución ====== */
+.nuestra-institucion {
+  background-color: var(--fondo);
+  padding: 100px 20px;
+  text-align: center;
+}
+
+.nuestra-institucion h1 {
+  font-size: 2.5rem;
+  color: var(--oscuro);
+  margin-bottom: 20px;
+}
+
+.nuestra-institucion p {
+  max-width: 800px;
+  margin: auto;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--gris);
+}
+
+
+
+
