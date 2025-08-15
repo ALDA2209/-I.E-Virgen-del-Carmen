@@ -1,17 +1,82 @@
 /* =========================================================
-   Utilidades: cargar fragmentos (header/footer) con data-include
+   1) Incluir header/footer con #site-header y #site-footer
 ========================================================= */
-document.querySelectorAll('[data-include]').forEach(async el => {
+async function include(target, url) {
+  const el = document.querySelector(target);
+  if (!el) return;
   try {
-    const res = await fetch(el.getAttribute('data-include'));
-    el.outerHTML = await res.text();
-  } catch (e) {
-    console.warn('No se pudo incluir:', e);
+    const res = await fetch(url, { cache: 'no-cache' });
+    if (!res.ok) throw new Error(`No se pudo cargar ${url}`);
+    el.innerHTML = await res.text();
+  } catch (err) {
+    console.error('No se pudo incluir:', url, err);
+    return;
+  }
+
+  // Año en footer
+  const y = el.querySelector('#y');
+  if (y) y.textContent = new Date().getFullYear();
+
+  // Marcar enlace activo en header
+  if (target === '#site-header') {
+    const file = location.pathname.split('/').pop() || 'index.html';
+    el.querySelectorAll('nav a[href]').forEach(a => {
+      const hrefFile = (a.getAttribute('href') || '').split('/').pop();
+      a.classList.toggle('active', hrefFile === file);
+    });
+  }
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const basePath = window.location.pathname.includes('/pages/')
+    ? '../components/'
+    : 'components/';
+
+  // Cargar header (todas) y footer (solo raíz)
+  await include('#site-header', `${basePath}header.html`);
+  if (!window.location.pathname.includes('/pages/')) {
+    await include('#site-footer', `${basePath}footer.html`);
+  }
+
+  /* =========================================================
+     2) Header que “acompaña” + color oscuro al bajar
+     - Requiere en CSS: body { padding-top: var(--h-header,0); }
+       y .encabezado.encima { position:fixed; top:0; left:0; right:0; }
+  ========================================================== */
+  const headerEl = document.querySelector('header.encabezado.encima');
+  if (headerEl) {
+    const setH = () => document.body.style.setProperty('--h-header', headerEl.offsetHeight + 'px');
+    setH();
+    // Si cambia el alto (responsive/menú), recalcular
+    if (window.ResizeObserver) {
+      new ResizeObserver(setH).observe(headerEl);
+    }
+  }
+
+  const alDesplazar = () => {
+    // Clase en <html> para activar estilos oscuros
+    document.documentElement.classList.toggle('desplazado', window.scrollY > 20);
+  };
+  window.addEventListener('scroll', alDesplazar);
+  alDesplazar();
+
+  /* =========================================================
+     3) Botón "Conócenos más" (index)
+  ========================================================== */
+  const btnMas = document.getElementById('btn-mas');
+  const descripcionExtra = document.getElementById('descripcion-extra');
+  if (btnMas && descripcionExtra) {
+    btnMas.addEventListener('click', function () {
+      descripcionExtra.classList.toggle('visible');
+      this.textContent = descripcionExtra.classList.contains('visible')
+        ? 'Mostrar menos'
+        : 'Conócenos más';
+    });
   }
 });
 
 /* =========================================================
-   Menú móvil (hamburguesa)
+   4) Menú móvil (hamburguesa)
 ========================================================= */
 document.addEventListener('click', e => {
   const boton = e.target.closest('.boton-menu');
@@ -22,16 +87,7 @@ document.addEventListener('click', e => {
 });
 
 /* =========================================================
-   Encabezado sólido al desplazar (cambia color/fondo)
-========================================================= */
-const alDesplazar = () => {
-  document.documentElement.classList.toggle('desplazado', window.scrollY > 20);
-};
-window.addEventListener('scroll', alDesplazar);
-alDesplazar();
-
-/* =========================================================
-   Slider de portada (diapositivas con flechas, autoplay y swipe)
+   5) Slider de portada (flechas, autoplay y swipe)
 ========================================================= */
 (function () {
   const portada = document.querySelector('.portada');
@@ -43,7 +99,7 @@ alDesplazar();
   let i = Math.max(0, diapositivas.findIndex(d => d.classList.contains('activa')));
   const mostrar = n => diapositivas.forEach((d, idx) => d.classList.toggle('activa', idx === n));
   const siguiente = () => { i = (i + 1) % diapositivas.length; mostrar(i); };
-  const anterior = () => { i = (i - 1 + diapositivas.length) % diapositivas.length; mostrar(i); };
+  const anterior  = () => { i = (i - 1 + diapositivas.length) % diapositivas.length; mostrar(i); };
 
   mostrar(i);
 
@@ -55,7 +111,7 @@ alDesplazar();
   portada.addEventListener('mouseenter', () => clearInterval(temporizador));
   portada.addEventListener('mouseleave', reiniciar);
 
-  // Deslizar en móvil
+  // Swipe móvil
   let x0 = null;
   portada.addEventListener('touchstart', e => x0 = e.touches[0].clientX, { passive: true });
   portada.addEventListener('touchend', e => {
@@ -67,54 +123,16 @@ alDesplazar();
 })();
 
 /* =========================================================
-   Cargar footer dinámicamente
+   6) Navegación interna: mantener misma pestaña
 ========================================================= */
-document.addEventListener("DOMContentLoaded", () => {
-  fetch("components/footer.html")
-    .then(response => response.text())
-    .then(data => {
-      document.getElementById("footer-placeholder").innerHTML = data;
-    })
-    .catch(error => console.error("Error cargando el footer:", error));
+document.addEventListener('click', e => {
+  const link = e.target.closest('nav a, .botones-portada a, .intro__texto a');
+  if (!link || !link.getAttribute('href')) return;
+
+  const url = link.getAttribute('href');
+  // externos o anclas: no interceptar
+  if (url.startsWith('http') || url.startsWith('mailto:') || url.startsWith('#')) return;
+
+  e.preventDefault();
+  window.location.href = url;
 });
-
-/* =========================================================
-   Enlaces del menú: cambiar ruta en misma pestaña
-========================================================= */
-document.addEventListener("click", e => {
-  const link = e.target.closest("nav a, .botones-portada a, .intro__texto a");
-  if (link && link.getAttribute("href")) {
-    const url = link.getAttribute("href");
-
-    // Si el enlace es externo, no lo interceptamos
-    if (url.startsWith("http") || url.startsWith("mailto:") || url.startsWith("#")) return;
-
-    e.preventDefault();
-    window.location.href = url; // Cambia la ruta en la misma pestaña
-  }
-});
-document.getElementById("btn-mas").addEventListener("click", function() {
-  const extra = document.getElementById("descripcion-extra");
-  extra.classList.toggle("activo");
-
-  if (extra.classList.contains("activo")) {
-    this.textContent = "Mostrar menos";
-  } else {
-    this.textContent = "Conócenos más";
-  }
-});
-document.addEventListener("DOMContentLoaded", function() {
-  const btnMas = document.getElementById("btn-mas");
-  const descripcionExtra = document.getElementById("descripcion-extra");
-
-  btnMas.addEventListener("click", function() {
-    descripcionExtra.classList.toggle("visible");
-    
-    if (descripcionExtra.classList.contains("visible")) {
-      btnMas.textContent = "Mostrar menos";
-    } else {
-      btnMas.textContent = "Conócenos más";
-    }
-  });
-});
-
